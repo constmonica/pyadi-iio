@@ -63,6 +63,8 @@ from adi.ad9144 import ad9144
 
 from adi.ad9152 import ad9152
 
+from adi.ad916x import ad9166
+
 from adi.ad9172 import ad9172
 
 from adi.ad9250 import ad9250
@@ -76,6 +78,8 @@ from adi.ad9467 import ad9467
 from adi.ad9625 import ad9625
 
 from adi.ada4961 import ada4961
+
+from adi.cn0511 import cn0511
 
 from adi.cn0532 import cn0532
 
