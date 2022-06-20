@@ -31,19 +31,47 @@
 # STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 # THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 import iio
+import re
+import numpy as np
 
 from adi.ad916x import ad9166
 from adi.context_manager import context_manager
 
 
-class CN0511(ad9166):
+class cn0511(ad9166):
     """ CN0511 Raspberry Pi Hat Signal Generator """
+
 
     def __init__(self, uri=""):
         context_manager.__init__(self, uri, self._device_name)
         ad9166.__init__(self, uri=uri)
         self._amp = self._ctx.find_device("ad9166-amp")
         self._synth = self._ctx.find_device("adf4372")
+        self.FIR85_enable = True 
+
+        self.__fmin_list = []
+        self.__offset_list = []
+        self.__cst_cal_list = []
+
+
+        #Set sample_rate to 6GHz
+        self.sample_rate = 6000000000
+
+        interval_cst = self._ctx._attrs.__getitem__('cn0511_freq')
+        offset_cst = self._ctx._attrs.__getitem__('cn0511_offset')
+        gain_cst = self._ctx._attrs.__getitem__('cn0511_gain')
+
+        my_regex = r"[+-]?\d+(?:\.\d*)?(?:[eE][+-]?\d+)?"
+
+        interval_cst_string_list = re.findall("\d+", interval_cst)
+        offset_cst_string_list = re.findall(r'\d+', offset_cst)
+        gain_cst_float_string_list = re.findall(my_regex, gain_cst)
+
+        self.__fmin_list = [float(x) for x in interval_cst_string_list]
+        self.__offset_list = [int(x) for x in offset_cst_string_list]
+        self.__cst_cal_list = [float(x) for x in gain_cst_float_string_list]
+
+
 
     @property
     def amp_enable(self):
@@ -109,3 +137,75 @@ class CN0511(ad9166):
             "5.60 mA",  # CP_CURRENT = 1111
         ]
         return available
+
+
+    ######################################################################
+    @property
+    def amplitude_cal(self):
+        """ amplitude_cal: CN0511 amplitude calibration
+            Options:
+                True: If you set this to true, the output is calibrated.
+                False: Nothing happens.
+        """
+        return None 
+
+
+    @amplitude_cal.setter
+    def amplitude_cal(self, value=True):
+        if value == True:
+            try:
+                # Calculate the number on Iofs_reg (0x42|0x41) as function of frequency:
+                if self.frequency < 100e6:
+                    # For frequencies below 100MHz, apply only the offset of the first 
+                    # interval on Iofs_reg (0x42|0x41).
+                    number_iofs = int(self.__offset_list[0])
+                    
+                for index_list in range(0, len(self.__fmin_list) - 1):
+                    # Check the interval of the input frequency (output_frequency) and 
+                    # apply the corresponding constants:
+                    if (self.frequency >= self.__fmin_list[index_list] and 
+                        self.frequency < self.__fmin_list[index_list + 1]): 
+
+                        # Calculate the number applied on Iofs_reg (0x42|0x41):
+                        number_iofs = (int(self.__offset_list[index_list] + 
+                                    self.__cst_cal_list[index_list]*(self.frequency - 
+                                    self.__fmin_list[index_list])))
+
+                        break
+
+
+                if (self.frequency >= self.__fmin_list[len(self.__fmin_list) - 1] and 
+                    self.frequency < 5990000000):
+                    # Calculate the number applied on Iofs_reg (0x42|0x41):
+                    number_iofs = (int(self.__offset_list[len(self.__fmin_list) - 1] + 
+                                self.__cst_cal_list[len(self.__fmin_list) - 1]*(self.frequency - 
+                                self.__fmin_list[len(self.__fmin_list) - 1])))
+
+
+                # If the calculated number is bigger than the maximum number that can be
+                # put on Iofs_reg, the number is clipped to the maximum value:
+                if number_iofs > 1023:
+                    number_iofs = 1023
+
+                lsb_number_iofs = hex(number_iofs&3)
+                msb_number_iofs = hex(number_iofs >> 2)
+
+                self._ctrl.reg_write(0x42, int(msb_number_iofs, 16))
+                self._ctrl.reg_write(0x41, int(lsb_number_iofs, 16))
+                # write_reg('ad9166', 0x42, msb_number_iofs)
+                # write_reg('ad9166', 0x41, lsb_number_iofs)
+            except Exception as ex:
+                raise ex
+
+    @property 
+    def calibrated_output(self):
+        """calibrated_output: ["desired_output_amplitude_in_dbm", "desired_output_frequency_in_Hz"]]"""
+        return [int(20 * np.log10(self.raw / (2 ** 15))), self.frequency]
+
+    @calibrated_output.setter
+    def calibrated_output(self, value):
+        self.frequency = value[1]
+        self.raw = int(10**(value[0]/20)*32768)
+        self.amplitude_cal = True
+
+    ######################################################################

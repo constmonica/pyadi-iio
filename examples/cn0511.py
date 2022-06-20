@@ -37,13 +37,13 @@ import adi
 import numpy as np
 
 # Set up CN0511. Replace URI with the actual uri of your CN0511 for remote access.
-uri = "ip:192.168.254.104"
+uri = "ip:10.48.65.125"
 # uri = "local:"
 # replace ambient temperature value with actual temperature for temperature
 # calibration.
 ambient_temp = 32.0
 
-rpi_sig_gen = adi.CN0511(uri=uri)
+rpi_sig_gen = adi.cn0511(uri=uri)
 
 # enable temperature measurements
 rpi_sig_gen.temperature_enable = True
@@ -54,17 +54,40 @@ rpi_sig_gen.temperature_cal = ambient_temp
 # Read temperature
 temp = rpi_sig_gen.temperature
 print("Chip Temperature: " + str(temp) + "°C")
-rpi_sig_gen.sample_rate = 5283840000
-# set NCO frequency in Hz
+
+
+# set uncalibrated output:
 rpi_sig_gen.nco_enable = True
 rpi_sig_gen.frequency = 100000000
+#set output power:
+rpi_sig_gen.raw = 1000
 print("Output Frequency set to: " + str(rpi_sig_gen.frequency) + " Hz")
 
-# set scale of waveform (0-32767)
-rpi_sig_gen.raw = 1000
 print(
-    "Output scale set to: " + str(20 * np.log10(rpi_sig_gen.raw / (2 ** 15))) + " dBFS"
+    "Output power set to: " + str(20 * np.log10(rpi_sig_gen.raw / (2 ** 15))) + " dBm"
 )
+
+
+#Method 1: set calibrated output [output_power_dbm, output_frequency_Hz]
+rpi_sig_gen.calibrated_output = [-30, 4000000000]
+print(
+    "Output power calibrated set to: " + str(rpi_sig_gen.calibrated_output[0]) + " dBm"
+)
+print("Output Frequency is set to: " + str(rpi_sig_gen.calibrated_output[1]) + " Hz")
+
+
+
+# #Method 2: set calibrated output by setting freqyency and output amplitude individually
+# rpi_sig_gen.raw = 1000
+# rpi_sig_gen.frequency = 4000000000
+# #calibrate outpu for the last set freqyency:
+# rpi_sig_gen.amplitude_cal = True
+# print(
+#     "Output power calibrated is set to: " + str(20 * np.log10(rpi_sig_gen.raw / (2 ** 15))) + " dBm"
+# )
+
+# print("Output Frequency is set to: " + str(rpi_sig_gen.frequency) + " Hz")
+
 
 # enable transmit
 rpi_sig_gen.tx_enable = True
