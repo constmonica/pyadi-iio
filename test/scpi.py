@@ -86,11 +86,16 @@ def get_clk_rate(classname, iio_uri):
     ssh_stdin, ssh_stdout, ssh_stderr = ssh_client.exec_command(
         "cat /sys/kernel/debug/clk/ad9361_ext_refclk/clk_rate"
     )
+    
 
     if ssh_stderr.channel.recv_exit_status() != 0:
         ssh_stdin, ssh_stdout, ssh_stderr = ssh_client.exec_command(
         "cat /sys/kernel/debug/clk/ad9361-refclk-gpio-gate/clk_rate"
         )
+        if ssh_stderr.channel.recv_exit_status() != 0:
+            ssh_stdin, ssh_stdout, ssh_stderr = ssh_client.exec_command(
+            "cat /sys/kernel/debug/clk/ad9364_ext_refclk/clk_rate"
+            )
         if ssh_stderr.channel.recv_exit_status() != 0:
             raise paramiko.SSHException("Command did not execute properly")
 
