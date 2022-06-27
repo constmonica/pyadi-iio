@@ -128,7 +128,7 @@ def dcxo_calibrate(context_desc, classname, iio_uri):
     sdr = eval(classname + "(uri='" + iio_uri + "')")
 
     for ctx_desc in context_desc:
-        if ctx_desc["hw"] != "adrv9361" or ctx_desc["hw"] != "adrv9364":
+        if ctx_desc["hw"] != "adrv9361" and ctx_desc["hw"] != "adrv9364":
             sdr._set_iio_dev_attr("dcxo_tune_coarse", coarse, sdr._ctrl)
             sdr._set_iio_dev_attr("dcxo_tune_fine", fine, sdr._ctrl)
         else:
