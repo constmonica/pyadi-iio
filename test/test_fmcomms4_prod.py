@@ -12,7 +12,7 @@ classname = "adi.ad9364"
 @pytest.mark.parametrize(
     "voltage_raw, low, high",
     [
-        ("in_temp0", 80, 160),
+        ("in_temp0", 20, 50),
         ("in_voltage0", 2129, 2713),
         ("in_voltage1", 2129, 2713),
         ("in_voltage2", 2948, 3532),
@@ -37,11 +37,16 @@ def test_ad7291(context_desc, voltage_raw, low, high):
         if c_name == voltage_raw:
             for attr in channel.attrs:
                 if attr == "raw":
-                    try:
-                        print(channel.attrs[attr].value)
-                        assert low <= int(channel.attrs[attr].value) <= high
-                    except OSError:
-                        continue
+                    if c_name == "in_temp0":
+                        temp = (2.5 * (int(channel.attrs[attr].value)/10 + 109.3) - 273.15)
+                        print(temp)
+                        assert low <= temp <= high
+                    else:
+                        try:
+                            print(channel.attrs[attr].value)
+                            assert low <= int(channel.attrs[attr].value) <= high
+                        except OSError:
+                            continue
 
 
 @pytest.mark.iio_hardware(hardware)
