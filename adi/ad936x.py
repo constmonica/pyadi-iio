@@ -50,6 +50,7 @@ class ad9364(rx_tx, context_manager):
         self._ctrl = self._ctx.find_device("ad9361-phy")
         self._rxadc = self._ctx.find_device("cf-ad9361-lpc")
         self._txdac = self._ctx.find_device("cf-ad9361-dds-core-lpc")
+        self._ctx.set_timeout(20000)
 
         rx_tx.__init__(self)
 
