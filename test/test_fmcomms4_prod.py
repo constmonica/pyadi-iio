@@ -54,13 +54,9 @@ def test_ad7291(context_desc, voltage_raw, low, high):
 @pytest.mark.parametrize(
     "attr, start, stop, step, tol, repeats",
     [
-        ("tx_hardwaregain_chan0", -30.0, -7.0, 0.25, 0, 100),
-        ("rx_lo", 2300000000, 2500000000, 1, 8, 100),
-        ("tx_lo", 1300000000, 2500000000, 1, 8, 100),
-        ("sample_rate", 30700000, 30740000, 1, 4, 20),
-        ("rx_rf_bandwidth", 16000000, 19000000, 1, 4, 10),
-        ("tx_rf_bandwidth", 16000000, 19000000, 1, 4, 10),
-    ],
+        ("rx_lo", 2300000000, 2500000000, 1, 8, 10),
+        ("tx_lo", 1300000000, 2500000000, 1, 8, 10),
+    ]
 )
 def test_ad9364_attr(
     test_attribute_single_value,
@@ -94,6 +90,7 @@ def test_ad9364_attr(
                 sample_rate=30720000,
                 tx_lo=1450000000,
                 rx_lo=2749999996,
+                tx_hardwaregain_chan0=-10,
                 gain_control_mode_chan0="slow_attack",
                 rx_rf_bandwidth=18000000,
                 tx_rf_bandwidth=18000000,
@@ -109,9 +106,6 @@ def test_ad9364_attr(
                 sample_rate=30720000,
                 tx_lo=1400000000,
                 rx_lo=2749999996,
-                gain_control_mode_chan0="slow_attack",
-                rx_rf_bandwidth=18000000,
-                tx_rf_bandwidth=18000000,
             ),
         ),
         (
@@ -124,10 +118,7 @@ def test_ad9364_attr(
                 gain_control_mode_chan0="slow_attack",
                 rx_lo=2749999996,
                 tx_lo=2750000000,
-                tx_hardwaregain_chan0=-10,
-                sample_rate=30720000,
-                rx_rf_bandwidth=18000000,
-                tx_rf_bandwidth=18000000,
+               
             ),
         ),
         (
@@ -140,10 +131,6 @@ def test_ad9364_attr(
                 gain_control_mode_chan0="slow_attack",
                 rx_lo=2749999996,
                 tx_lo=2750000000,
-                tx_hardwaregain_chan0=-10,
-                sample_rate=30720000,
-                rx_rf_bandwidth=18000000,
-                tx_rf_bandwidth=18000000,
             ),
         ),
     ],
@@ -180,10 +167,6 @@ def test_rssi(
                 gain_control_mode_chan0="slow_attack",
                 rx_lo=1400000000,
                 tx_lo=2750000000,
-                tx_hardwaregain_chan0=-10,
-                sample_rate=30720000,
-                rx_rf_bandwidth=18000000,
-                tx_rf_bandwidth=18000000,
             ),
         ),
         (
@@ -197,10 +180,6 @@ def test_rssi(
                 gain_control_mode_chan0="slow_attack",
                 rx_lo=1400000000,
                 tx_lo=2750000000,
-                tx_hardwaregain_chan0=-10,
-                sample_rate=30720000,
-                rx_rf_bandwidth=18000000,
-                tx_rf_bandwidth=18000000,
             ),
         ),
         (
@@ -214,10 +193,6 @@ def test_rssi(
                 gain_control_mode_chan0="slow_attack",
                 rx_lo=2749999996,
                 tx_lo=2750000000,
-                tx_hardwaregain_chan0=-10,
-                sample_rate=30720000,
-                rx_rf_bandwidth=18000000,
-                tx_rf_bandwidth=18000000,
             ),
         ),
         (
@@ -231,10 +206,6 @@ def test_rssi(
                 gain_control_mode_chan0="slow_attack",
                 rx_lo=2749999996,
                 tx_lo=2750000000,
-                tx_hardwaregain_chan0=-10,
-                sample_rate=30720000,
-                rx_rf_bandwidth=18000000,
-                tx_rf_bandwidth=18000000,
             ),
         )
     ],
@@ -282,9 +253,6 @@ def test_ad9364_loopback(test_dma_loopback, iio_uri, classname, channel):
             rx_lo=3000000000,
             tx_lo=3000000000,
             gain_control_mode_chan0="slow_attack",
-            tx_hardwaregain_chan0=-10,
-            rx_rf_bandwidth=18000000,
-            tx_rf_bandwidth=18000000,
         ),
         dict(
             rx_rf_port_select="B_BALANCED",
@@ -293,9 +261,6 @@ def test_ad9364_loopback(test_dma_loopback, iio_uri, classname, channel):
             rx_lo=3000000000,
             tx_lo=3000000000,
             gain_control_mode_chan0="slow_attack",
-            tx_hardwaregain_chan0=-10,
-            rx_rf_bandwidth=18000000,
-            tx_rf_bandwidth=18000000,
         ),
     ],
 )
@@ -314,16 +279,12 @@ def test_ad9364_iq_loopback(test_iq_loopback, iio_uri, classname, channel, param
             tx_rf_port_select="A",
             rx_lo=3000000000,
             tx_lo=3000000000,
-            tx_hardwaregain_chan0=-10,
-            sample_rate=30720000,
         ),
         dict(
             rx_rf_port_select="B_BALANCED",
             tx_rf_port_select="B",
             rx_lo=2600000000,
             tx_lo=2600000000,
-            tx_hardwaregain_chan0=-10,
-            sample_rate=30720000,
         ),
     ],
 )
@@ -348,16 +309,12 @@ def test_harmonic_values(
             tx_rf_port_select="A",
             rx_lo=3000000000,
             tx_lo=3000000000,
-            tx_hardwaregain_chan0=-10,
-            sample_rate=30720000,
         ),
         dict(
             rx_rf_port_select="B_BALANCED",
             tx_rf_port_select="B",
             rx_lo=2600000000,
             tx_lo=2600000000,
-            tx_hardwaregain_chan0=-10,
-            sample_rate=30720000,
         ),
     ],
 )

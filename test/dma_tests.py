@@ -630,7 +630,7 @@ def sfdr_low(classname, uri, channel, param_set, low, high, plot=False):
         setattr(sdr, p, param_set[p])
 
     sdr.dds_single_tone(2999577, 0.0625, channel)
-    time.sleep(4)
+    time.sleep(1)
 
     N = 2 ** 14
     sdr.tx_cyclic_buffer = True
@@ -658,7 +658,7 @@ def sfdr_low(classname, uri, channel, param_set, low, high, plot=False):
 
     try:
         #sdr.tx(iq)
-        time.sleep(5)
+        time.sleep(1)
         for _ in range(30):
             data = sdr.rx()
         amp = 0
@@ -672,7 +672,6 @@ def sfdr_low(classname, uri, channel, param_set, low, high, plot=False):
         del sdr
         raise Exception(e)
     del sdr
-    time.sleep(3)
 
     L = len(data)
     # amp = fftshift(amp)
@@ -843,7 +842,7 @@ def gain_check(uri, classname, channel, param_set, dds_scale, min_rssi, max_rssi
     else:
         fs = int(sdr.rx_sample_rate)
     sdr.dds_single_tone(np.floor(fs * 0.1), dds_scale, channel)
-    time.sleep(5)
+    time.sleep(1)
 
     # Check RSSI
     if channel == 0:
@@ -909,7 +908,7 @@ def hardwaregain(
 
     sdr.dds_single_tone(frequency, dds_scale, channel)
 
-    time.sleep(4)
+    time.sleep(1)
 
     if channel == 0:
         hwgain = sdr._get_iio_attr("voltage0", "hardwaregain", False, sdr._ctrl)
@@ -959,7 +958,7 @@ def harmonic_vals(classname, uri, channel, param_set, low, high, plot=False):
         setattr(sdr, p, param_set[p])
 
     sdr.dds_single_tone(2999577, 0.0625, channel)
-    time.sleep(3)
+    time.sleep(1)
 
     N = 2 ** 14
 
@@ -988,7 +987,6 @@ def harmonic_vals(classname, uri, channel, param_set, low, high, plot=False):
 
     try:
         #sdr.tx(iq)
-        time.sleep(5)
         for _ in range(30):
             data = sdr.rx()
 
@@ -1002,7 +1000,7 @@ def harmonic_vals(classname, uri, channel, param_set, low, high, plot=False):
     except Exception as e:
         del sdr
         raise Exception(e)
-    time.sleep(3)
+    
 
     # ampl = 1 / L * np.absolute(fft(data))
     # ampl = 20 * np.log10(ampl / ref + 10 ** -20)
