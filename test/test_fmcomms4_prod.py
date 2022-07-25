@@ -159,7 +159,7 @@ def test_rssi(
         (
             0.0,
             999859,
-            60,
+            50,
             80,
             dict(
                 rx_rf_port_select="A_BALANCED",
