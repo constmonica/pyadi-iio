@@ -13,12 +13,12 @@ classname = "adi.ad9364"
     "voltage_raw, low, high",
     [
         ("in_temp0", 20, 50),
-        ("in_voltage0", 2129, 2713),
-        ("in_voltage1", 2129, 2713),
-        ("in_voltage2", 2948, 3532),
-        ("in_voltage3", 2048, 2632),
-        ("in_voltage4", 1064, 1648),
-        ("in_voltage5", 1064, 1648),
+        ("in_voltage0", 2120, 2713),
+        ("in_voltage1", 2120, 2713),
+        ("in_voltage2", 2940, 3532),
+        ("in_voltage3", 2040, 2632),
+        ("in_voltage4", 1060, 1648),
+        ("in_voltage5", 1060, 1648),
     ],
 )
 def test_ad7291(context_desc, voltage_raw, low, high):
