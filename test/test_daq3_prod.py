@@ -14,12 +14,12 @@ classname = "adi.DAQ3"
     "voltage_raw, low, high",
     [
         ("in_temp0", 40, 60),
-        ("in_voltage0", 2120, 2713),
-        ("in_voltage1", 2120, 2713),
-        ("in_voltage2", 2940, 3532),
-        ("in_voltage3", 2040, 2632),
-        ("in_voltage4", 1060, 1648),
-        ("in_voltage5", 1060, 1648),
+        ("in_voltage0", 2703, 3296),
+        ("in_voltage1", 2540, 2867),
+        ("in_voltage2", 2540, 2867),
+        ("in_voltage3", 1229, 1393),
+        ("in_voltage4", 1884, 2179),
+        ("in_voltage5", 2458, 2867),
     ],
 )
 def test_ad7291(context_desc, voltage_raw, low, high):
