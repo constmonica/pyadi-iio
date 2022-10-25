@@ -106,3 +106,17 @@ def test_daq3_dds_loopback(
 @pytest.mark.parametrize("param_set", [dict()])
 def test_daq3_cw_loopback(test_cw_loopback, iio_uri, classname, channel, param_set):
     test_cw_loopback(iio_uri, classname, channel, param_set)
+
+def test_rssi(
+    test_gain_check,
+    iio_uri,
+    classname,
+    channel,
+    param_set,
+    dds_scale,
+    min_rssi,
+    max_rssi,
+):
+    test_gain_check(
+        iio_uri, classname, channel, param_set, dds_scale, min_rssi, max_rssi
+    )
