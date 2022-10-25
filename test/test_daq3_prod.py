@@ -13,7 +13,7 @@ classname = "adi.DAQ3"
 @pytest.mark.parametrize(
     "voltage_raw, low, high",
     [
-        ("in_temp0", 20, 50),
+        ("in_temp0", 40, 60),
         ("in_voltage0", 2120, 2713),
         ("in_voltage1", 2120, 2713),
         ("in_voltage2", 2940, 3532),
