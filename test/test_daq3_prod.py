@@ -107,6 +107,45 @@ def test_daq3_dds_loopback(
 def test_daq3_cw_loopback(test_cw_loopback, iio_uri, classname, channel, param_set):
     test_cw_loopback(iio_uri, classname, channel, param_set)
 
+@pytest.mark.iio_hardware(hardware)
+@pytest.mark.parametrize("classname", [(classname)])
+@pytest.mark.parametrize("channel", [0, 1])
+@pytest.mark.parametrize(
+    "dds_scale, min_rssi, max_rssi, param_set",
+    [
+        (
+            0.0,
+            75,
+            150,
+            dict(
+                sample_rate=30720000,
+                tx_lo=2300000000,
+                rx_lo=2400000000,
+                gain_control_mode_chan0="slow_attack",
+                gain_control_mode_chan1="slow_attack",
+                rx_rf_bandwidth=18000000,
+                tx_rf_bandwidth=18000000,
+            ),
+        ),
+        (
+            0.4,
+            10,
+            50,
+            dict(
+                gain_control_mode_chan0="slow_attack",
+                gain_control_mode_chan1="slow_attack",
+                rx_lo=2400000000,
+                tx_lo=2400000000,
+                tx_hardwaregain_chan0=-10,
+                tx_hardwaregain_chan1=-10,
+                sample_rate=30720000,
+                rx_rf_bandwidth=18000000,
+                tx_rf_bandwidth=18000000,
+            ),
+        ),
+    ],
+)
+
 def test_rssi(
     test_gain_check,
     iio_uri,
