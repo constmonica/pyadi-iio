@@ -118,7 +118,7 @@ def test_daq3_cw_loopback(test_cw_loopback, iio_uri, classname, channel, param_s
             75,
             150,
             dict(
-                sample_rate=30720000,
+                sample_rate=1233333333,
                 tx_lo=2300000000,
                 rx_lo=2400000000,
                 gain_control_mode_chan0="slow_attack",
