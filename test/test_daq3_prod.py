@@ -138,7 +138,7 @@ def test_daq3_cw_loopback(test_cw_loopback, iio_uri, classname, channel, param_s
                 tx_lo=2400000000,
                 tx_hardwaregain_chan0=-10,
                 tx_hardwaregain_chan1=-10,
-                sample_rate=30720000,
+                sample_rate=1233333333,
                 rx_rf_bandwidth=18000000,
                 tx_rf_bandwidth=18000000,
             ),
@@ -241,3 +241,12 @@ def test_hardware_gain(
         hardwaregain_high,
         param_set,
     )
+
+@pytest.mark.parametrize(
+    "low, high",
+    [([-20.0, -120.0, -120.0, -125.0], [-10.0, -75.0, -75.0, -80.0])],
+)
+def test_harmonic_values(
+    test_harmonics, classname, iio_uri, channel, param_set, low, high, plot=False
+):
+    test_harmonics(classname, iio_uri, channel, param_set, low, high, plot)
