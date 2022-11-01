@@ -75,12 +75,10 @@ def test_daq3_rx_data(test_dma_rx, iio_uri, classname, channel):
 @pytest.mark.parametrize(
     "frequency, scale",
     [
-        (5000000, 0.12),
-        (10000000, 0.06),
-        (10000000, 0.12),
-        (15000000, 0.12),
-        (15000000, 0.5),
-        (200000000, 0.5),
+        (97001602, 0.12),
+        (97001602, 0.06),
+        (39993896, 0.12),
+        (39993896, 0.12),
     ],
 )
 @pytest.mark.parametrize("peak_min", [-45])
