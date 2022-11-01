@@ -159,3 +159,85 @@ def test_rssi(
     test_gain_check(
         iio_uri, classname, channel, param_set, dds_scale, min_rssi, max_rssi
     )
+
+@pytest.mark.iio_hardware(hardware)
+@pytest.mark.parametrize("classname", [(classname)])
+@pytest.mark.parametrize("channel", [0])
+@pytest.mark.parametrize(
+    "dds_scale, frequency, hardwaregain_low, hardwaregain_high, param_set",
+    [
+        (
+            0.0,
+            999859,
+            50,
+            80,
+            dict(
+                rx_rf_port_select="A_BALANCED",
+                tx_rf_port_select="A",
+                gain_control_mode_chan0="slow_attack",
+                rx_lo=1400000000,
+                tx_lo=2750000000,
+            ),
+        ),
+        (
+            0.0,
+            999859,
+            50,
+            80,
+            dict(
+                rx_rf_port_select="B_BALANCED",
+                tx_rf_port_select="B",
+                gain_control_mode_chan0="slow_attack",
+                rx_lo=1400000000,
+                tx_lo=2750000000,
+            ),
+        ),
+        (
+            0.4,
+            999859,
+            0.0,
+            25,
+            dict(
+                rx_rf_port_select="A_BALANCED",
+                tx_rf_port_select="A",
+                gain_control_mode_chan0="slow_attack",
+                rx_lo=2749999996,
+                tx_lo=2750000000,
+            ),
+        ),
+        (
+            0.4,
+            999859,
+            0.0,
+            28,
+            dict(
+                rx_rf_port_select="B_BALANCED",
+                tx_rf_port_select="B",
+                gain_control_mode_chan0="slow_attack",
+                rx_lo=2749999996,
+                tx_lo=2750000000,
+            ),
+        )
+    ],
+)
+def test_hardware_gain(
+    test_hardwaregain,
+    iio_uri,
+    classname,
+    channel,
+    dds_scale,
+    frequency,
+    hardwaregain_low,
+    hardwaregain_high,
+    param_set,
+):
+    test_hardwaregain(
+        iio_uri,
+        classname,
+        channel,
+        dds_scale,
+        frequency,
+        hardwaregain_low,
+        hardwaregain_high,
+        param_set,
+    )
