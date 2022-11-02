@@ -267,6 +267,6 @@ def test_daq3_cw_loopback(test_cw_loopback, iio_uri, classname, channel, param_s
     [97014318, 185014114, 169996185],
 )
 def test_harmonic_values(
-    test_harmonics, classname, iio_uri, channel, param_set, low, high, dds_freq, plot=False
+    test_harmonics, classname, iio_uri, channel, param_set, low, high, dds_freq, plot=True
 ):
     test_harmonics(classname, iio_uri, channel, param_set, low, high, dds_freq, plot)
