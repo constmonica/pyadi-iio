@@ -930,7 +930,7 @@ def hardwaregain(
     assert hardwaregain_low <= hwgain <= hardwaregain_high
 
 
-def harmonic_vals(classname, uri, channel, param_set, low, high, plot=False):
+def harmonic_vals(classname, uri, channel, param_set, low, high, dds_freq, plot=False):
     """ harmonic_vals: Test first five harmonics and check to be within
         certain intervals. This test also requires a devices with TX and RX
         onboard where thetransmit signal can be recovered.Sinuoidal data is
@@ -957,7 +957,7 @@ def harmonic_vals(classname, uri, channel, param_set, low, high, plot=False):
     for p in param_set.keys():
         setattr(sdr, p, param_set[p])
 
-    sdr.dds_single_tone(2999577, 0.0625, channel)
+    sdr.dds_single_tone(dds_freq, 1.0, channel)
     time.sleep(1)
 
     N = 2 ** 14
