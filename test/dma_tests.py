@@ -957,7 +957,7 @@ def harmonic_vals(classname, uri, channel, param_set, low, high, dds_freq, plot=
     for p in param_set.keys():
         setattr(sdr, p, param_set[p])
 
-    sdr.dds_single_tone(dds_freq, 0, channel)
+    sdr.dds_single_tone(dds_freq, 0.12, channel)
     time.sleep(1)
 
     N = 2 ** 14
