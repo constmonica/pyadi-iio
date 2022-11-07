@@ -117,11 +117,11 @@ def test_daq3_dds_loopback(
 )
 @pytest.mark.parametrize(
     "low, high",
-    [([-20.0, -150.0, -150.0, -150.0, -150.0, -150.0], [0.0, -67.0, -55.0, -72.0, -54.0, -74.0])],
+    [([-20.0, -150.0, -150.0, -150.0], [0.0, -67.0, -55.0, -72.0])],
 )
 @pytest.mark.parametrize(
     "dds_freq",
-    [97014318, 185014114, 169996185],
+    [(97014318, 185014114, 169996185)],
 )
 def test_harmonic_values(
     test_harmonics, classname, iio_uri, channel, param_set, low, high, dds_freq, plot=True
