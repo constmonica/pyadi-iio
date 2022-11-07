@@ -121,7 +121,7 @@ def test_daq3_dds_loopback(
 )
 @pytest.mark.parametrize(
     "dds_freq",
-    [(97014318, 185014114, 169996185)],
+    [97014318, 185014114, 169996185],
 )
 def test_harmonic_values(
     test_harmonics, classname, iio_uri, channel, param_set, low, high, dds_freq, plot=True
