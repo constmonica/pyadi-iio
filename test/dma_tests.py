@@ -254,7 +254,7 @@ def dds_loopback(
         setattr(sdr, p, param_set[p])
     # Set common buffer settings
     sdr.tx_cyclic_buffer = True
-    N = 2 ** 14
+    N = 2 ** 12
 
     if use_obs and use_rx2:
         raise Exception("Both RX2 and OBS are selected. Select one at a time.")
