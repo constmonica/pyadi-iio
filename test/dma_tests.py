@@ -357,7 +357,7 @@ def dds_two_tone(
         setattr(sdr, p, param_set[p])
     # Set common buffer settings
     sdr.tx_cyclic_buffer = True
-    N = 2 ** 14
+    N = 2 ** 13
     # Create a sinewave waveform
     if hasattr(sdr, "sample_rate"):
         RXFS = int(sdr.sample_rate)
