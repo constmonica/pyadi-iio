@@ -37,10 +37,11 @@ import sys
 from time import sleep
 import adi
 
-max24287 = adi.max24287(uri="ip:127.0.0.1")
-#dev = adi.max24287(uri="serial:/dev/ttyACM0,115200,8n2n") 
+# Set up MAX24287 device
+max24287 = adi.max24287(uri="serial:/dev/ttyACM0,115200,8n2n") 
 
-print("par speed:", max24287.par_speed)
-print("ser link:", max24287.ser_link)
-print("ser speed:", max24287.ser_speed)
-print("reg access", max24287.direct_reg_access)
+# Read device-specific attributes
+print("Parallel speed:", max24287.par_speed)
+print("Serial link:", max24287.ser_link)
+print("Serial speed:", max24287.ser_speed)
+print("Register access:", max24287.direct_reg_access)
