@@ -36,23 +36,22 @@ from time import sleep
 import adi
 
 
-# Set up MWC
-#dev = adi.mwc(uri="serial:/dev/ttyACM0,115200,8n2n") 
-hmc6300 = adi.hmc6300(uri="ip:127.0.0.1")
+# Set up HMC6300
+hmc6300 = adi.mwc(uri="serial:/dev/ttyACM0,115200,8n2n") 
 
 # Device attributes
 hmc6300.enabled = True
 print("Enabled value:", hmc6300.enabled)
 hmc6300.vco = 100000
-print("vco", hmc6300.vco)
-print("vco_available", hmc6300.vco_available)
+print("VCO: ", hmc6300.vco)
+print("VCO Available: ", hmc6300.vco_available)
 hmc6300.if_attn = 18
-print("if attenuation", hmc6300.if_attn)
+print("If attenuation", hmc6300.if_attn)
 hmc6300.temp_en = False
-print("temperature enable:", hmc6300.temp_en)
-print("rf_attn", hmc6300.rf_attn)
+print("Temperature enable: ", hmc6300.temp_en)
+print("Rf attn", hmc6300.rf_attn)
 hmc6300.direct_reg_access = 19
-print("debug attr:", hmc6300.direct_reg_access)
+print("Debug attribute:", hmc6300.direct_reg_access)
 
 #Channel attribute:
-print("raw_value", hmc6300.channel["temp"].raw)
+print("Raw value for temperature: ", hmc6300.channel["temp"].raw)
