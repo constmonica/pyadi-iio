@@ -34,17 +34,16 @@
 import adi
 
 
-# Set up ADIN1300
-#dev = adi.adin1300(uri= "serial:/dev/ttyACM0,115200,8n2n") 
-adin1300 = adi.adin1300(uri="ip:127.0.0.1")
+# Set up ADIN1300 device
+adin1300 = adi.adin1300(uri= "serial:/dev/ttyACM0,115200,8n2n") 
 
-# Device attribute
-print("link:", adin1300.link)
+# Device-specific attributes
+print("Link:", adin1300.link)
 adin1300.speed = 3
 
 t = ((0, False), (10, True), (100, False), (100, True), (1000, False), (1000, True))
-print ("speed data:", t[adin1300.speed])
-print("speed:", adin1300.speed)
+print ("Speed data:", t[adin1300.speed])
+print("Speed:", adin1300.speed)
 adin1300.autonegotiate = True
-print("autoneg", adin1300.autonegotiate)
-print("direct_reg_access", adin1300.direct_reg_access)
+print("Autonegociate", adin1300.autonegotiate)
+print("Direct register access", adin1300.direct_reg_access)
