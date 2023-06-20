@@ -37,27 +37,27 @@ import adi
 
 
 # Set up HMC6301 device
-#dev = adi.mwc(uri="serial:/dev/ttyACM0,115200,8n2n") 
-hmc6301 = adi.hmc6301(uri="ip:127.0.0.1")
+hmc6301 = adi.mwc(uri="serial:/dev/ttyACM0,115200,8n2n") 
 
 # Device attributes
 hmc6301.enabled = True
 print("Enabled value:", hmc6301.enabled)
-#dev.vco = 100000
-print("vco", hmc6301.vco)
-print("vco_available=:", hmc6301.vco_available)
-#dev.if_attn = 18
-print("if attenuation", hmc6301.if_attn)
-#dev.temp_en = False
-print("temperature enable:", hmc6301.temp_en)
-print("rf_attn", hmc6301.rf_lna_gain)
-#dev.direct_reg_access = 19
-print("debug attr:", hmc6301.direct_reg_access)
-print("bb_attn1", hmc6301.bb_attn1)
-print("bb_attn2", hmc6301.bb_attn2)
-print("bb_attnq_fine", hmc6301.bb_attnq_fine)
-print("bb_attni_fine", hmc6301.bb_attni_fine)
-print("bb_lpc", hmc6301.bb_lpc)
-print("bb_lpc", hmc6301.bb_hpc)
-#Channel attribute:
-print("raw_value", hmc6301.channel["temp"].raw)
+dev.vco = 100000
+print("Vco:", hmc6301.vco)
+print("Vco available:", hmc6301.vco_available)
+dev.if_attn = 18
+print("If attenuation:", hmc6301.if_attn)
+dev.temp_en = Fase
+print("Temperature enable:", hmc6301.temp_en)
+print("Rf attn", hmc6301.rf_lna_gain)
+dev.direct_reg_access = 19
+print("Debug attribute:", hmc6301.direct_reg_access)
+print("bb_attn1:", hmc6301.bb_attn1)
+print("bb_attn2:", hmc6301.bb_attn2)
+print("bb_attnq_fine:", hmc6301.bb_attnq_fine)
+print("bb_attni_fine:", hmc6301.bb_attni_fine)
+print("bb_lpc:", hmc6301.bb_lpc)
+print("bb_lpc:", hmc6301.bb_hpc)
+
+# Channel attribute
+print("Raw value of temperature", hmc6301.channel["temp"].raw)
