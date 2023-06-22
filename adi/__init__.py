@@ -157,6 +157,10 @@ from adi.adpd1080 import adpd1080
 
 from adi.ad717x import ad717x
 
+from adi.hmc6300 import hmc6300
+
+from adi.hmc6301 import hmc6301
+
 try:
     from adi.jesd import jesd
 except ImportError:
