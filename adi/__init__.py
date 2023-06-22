@@ -163,6 +163,8 @@ from adi.hmc6301 import hmc6301
 
 from adi.adin1300 import adin1300
 
+from adi.max24287 import max24287
+
 try:
     from adi.jesd import jesd
 except ImportError:
