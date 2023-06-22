@@ -161,6 +161,8 @@ from adi.hmc6300 import hmc6300
 
 from adi.hmc6301 import hmc6301
 
+from adi.adin1300 import adin1300
+
 try:
     from adi.jesd import jesd
 except ImportError:
