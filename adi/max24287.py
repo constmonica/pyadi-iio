@@ -55,8 +55,8 @@ class max24287(context_manager, attribute):
         #Select the device matching device_name as working device
         
         for device in self._ctx.devices:
-            print("Found device {}".format(device_name))
             if device.name == device_name:
+                print("Found device {}".format(device_name))
                 self._ctrl = device
                 break
     
