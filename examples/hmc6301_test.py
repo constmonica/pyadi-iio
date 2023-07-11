@@ -37,20 +37,20 @@ import adi
 
 
 # Set up HMC6301 device
-hmc6301 = adi.mwc(uri="serial:/dev/ttyACM0,115200,8n2n") 
+hmc6301 = adi.hmc6301(uri="serial:/dev/ttyACM0,115200,8n2n") 
 
 # Device attributes
 hmc6301.enabled = True
 print("Enabled value:", hmc6301.enabled)
-dev.vco = 100000
+hmc6301.vco = 100000
 print("Vco:", hmc6301.vco)
 print("Vco available:", hmc6301.vco_available)
-dev.if_attn = 18
+hmc6301.if_attn = 18
 print("If attenuation:", hmc6301.if_attn)
-dev.temp_en = Fase
+hmc6301.temp_en = Fase
 print("Temperature enable:", hmc6301.temp_en)
 print("Rf attn", hmc6301.rf_lna_gain)
-dev.direct_reg_access = 19
+hmc6301.direct_reg_access = 19
 print("Debug attribute:", hmc6301.direct_reg_access)
 print("bb_attn1:", hmc6301.bb_attn1)
 print("bb_attn2:", hmc6301.bb_attn2)
