@@ -37,7 +37,7 @@ import adi
 
 
 # Set up HMC6300
-hmc6300 = adi.mwc(uri="serial:/dev/ttyACM0,115200,8n2n") 
+hmc6300 = adi.hmc6300(uri="serial:/dev/ttyACM0,115200,8n2n") 
 
 # Device attributes
 hmc6300.enabled = True
@@ -46,6 +46,7 @@ hmc6300.vco = 100000
 print("VCO: ", hmc6300.vco)
 print("VCO Available: ", hmc6300.vco_available)
 hmc6300.if_attn = 18
+
 print("If attenuation", hmc6300.if_attn)
 hmc6300.temp_en = False
 print("Temperature enable: ", hmc6300.temp_en)
