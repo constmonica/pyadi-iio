@@ -44,6 +44,7 @@ def attribute_single_value(
     for _ in range(repeats):
         ind = random.randint(0, numints)
         val = start + step * ind
+        print(val)
         # Check hardware
         if sub_channel:
             assert (
