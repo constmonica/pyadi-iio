@@ -1,110 +1,70 @@
 import adi
 import iio
 import pytest
+import datetime
+import hashlib
+import subprocess
 
 
-hardware = "admv9625"
+hardware = ["admv9625", "admv9615"]
 classname = ""
 
+# ########################### SERIAL NUMBER WRITING #############################
 
-
-########################################
-
-@pytest.mark.iio_hardware("admv9625")
-@pytest.mark.parametrize("classname", [("adi.hmc6300")])
-@pytest.mark.parametrize(
-  "attr, start, stop, step, tol, repeats",
-  [
-        ("vco", 55125000, 66150000, 262500, 10000, 1),
-        ("if_attn", 10, 15, 1, 100, 1),
-        ("rf_attn", 1, 7, 2, 100, 1),
-  ],
-)
-
-def test_hmc6300(
-    test_attribute_single_value, 
-    iio_uri, 
-    classname, 
-    attr, 
-    start, 
-    stop, 
-    step, 
-    tol,
-    repeats,
-):
-    test_attribute_single_value(iio_uri, classname, attr, start, stop, step, tol, repeats)
-    
-@pytest.mark.iio_hardware("admv9625")
-@pytest.mark.parametrize("classname", [("adi.hmc6301")])
-@pytest.mark.parametrize(
-  "attr, start, stop, step, tol, repeats",
-  [
-        ("vco", 55125000, 66150000, 262500, 10000, 1),
-        ("if_attn", 10, 15, 1, 10, 1),
-        ("rf_lna_gain", 1, 7, 2, 10, 1),
-        ("bb_attn1", 1, 3, 1, 10, 1),
-        ("bb_attn2", 1, 3, 1, 10, 1)
-  ],
-)
-
-def test_hmc6301(
-    test_attribute_single_value, 
-    iio_uri, 
-    classname, 
-    attr, 
-    start, 
-    stop, 
-    step, 
-    tol,
-    repeats,
-):
-    test_attribute_single_value(iio_uri, classname, attr, start, stop, step, tol, repeats)
-
-############################################################
-    
-@pytest.mark.iio_hardware("admv9625")
-@pytest.mark.parametrize("classname", [("adi.max24287")])
-@pytest.mark.parametrize(
-    "attr, start, stop, step, tol, repeats",
-    [
-        ("par_speed", 0, 5, 1, 10, 1),
-        ("ser_link", 0, 5, 1, 10, 1),
-        ("ser_speed", 0, 1, 1, 10, 1)
-    ],
-)
-
-def test_max24287(test_attribute_single_value, iio_uri, classname, attr, start, stop, step, tol, repeats):
-    test_attribute_single_value(iio_uri, classname, attr, start, stop, step, tol, repeats)
-    
-@pytest.mark.iio_hardware("admv9625")
-@pytest.mark.parametrize("classname", [("adi.adin1300")])
-@pytest.mark.parametrize(
-    "attr, start, stop, step, tol, repeats",
-    [
-        ("link", 0, 1, 1, 10, 1),
-        ("speed", 0, 5, 1, 10, 1),
-        # ("direct_reg_access", 2000, 4500, 100, 10, 2)
-    ],
-)
-
-def test_adin1300(test_attribute_single_value, iio_uri, classname, attr, start, stop, step, tol, repeats):
-    test_attribute_single_value(iio_uri, classname, attr, start, stop, step, tol, repeats)
-    
-@pytest.mark.iio_hardware("admv9625")
+@pytest.mark.iio_hardware(hardware)
 @pytest.mark.parametrize("classname", [("adi.mwc")])
-@pytest.mark.parametrize(
-    "attr, start, stop, step, tol, repeats",
-    [
-        ("tx_target", 100, 400, 10, 10, 1),
-        ("rx_target", 1800, 2050, 100, 10, 1),
-        ("tx_det", 300, 400, 10, 10, 1),
-        ("rx_det", 600, 900, 10, 10, 1),
-        ("rx_tolerance", 1800, 2050, 100, 10, 1)
-    ],
-)
+@pytest.mark.parametrize("attr", [("carrier_serial")])
+@pytest.mark.parametrize("val", [("val")])
 
-def test_mwc(test_attribute_single_value, iio_uri, classname, attr, start, stop, step, tol, repeats):
-    test_attribute_single_value(iio_uri, classname, attr, start, stop, step, tol, repeats)
+def test_write_serial_attr(test_attribute_single_value_str, iio_uri, classname, attr, val):
+    date_string = datetime.datetime.now().strftime('%y%m%d')
+    hash_string = hashlib.md5(str(datetime.datetime.now().time().microsecond).encode()).hexdigest()[:7]
+    val = f"{date_string}-{hash_string}"
+    test_attribute_single_value_str(iio_uri, classname, attr, val, 0)
+# 
+
+# ################################# WRITING SAVE AND SAVE DEFAULTS STATE VARIABLE ##############
+@pytest.mark.iio_hardware(hardware)
+@pytest.mark.parametrize("classname", [("adi.mwc")])
+@pytest.mark.parametrize("attr, val",
+                         [
+                             ("save", "1"),
+                             ("save_defaults", "1"),
+                             ("hw_version", "-"),
+                             ("hw_serial", "-"),
+                             ("carrier_version", "b"),
+                             ("carrier_model", "admv96s-wghe-ek")
+                            
+                            ],
+                         )
+def test_write_save(test_attribute_write_only_str, iio_uri, classname, attr, val):
+    test_attribute_write_only_str(iio_uri, classname, attr, val)
+
+
+
+                                 
+                                 
+# ###################################### READING FIRMWARE VERSION ATTR ################################
+
+def check_firmware(word):
+    command = "sudo iio_info -u serial:/dev/ttyACM0,345600,8n1n | grep 'Backend description string'"
+
+    try:
+        output = subprocess.check_output(command, shell=True, text=True)
+        lines = output.strip().split('\n')
+        last_line = lines[-1] if lines else None
+
+        return word in last_line if last_line else False
+    except subprocess.CalledProcessError as e:
+        print(f"Error executing the command: {e}")
+        return False
+
+@pytest.mark.parametrize("word_to_check, expected_result", [
+    ("wethlink-production", True)])
+
+def test_check_firmware(word_to_check, expected_result):
+    assert check_firmware(word_to_check) == expected_result
+
 
 
 

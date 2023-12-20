@@ -167,6 +167,8 @@ from adi.max24287 import max24287
 
 from adi.mwc import mwc
 
+from adi.adm1177 import adm1177
+
 try:
     from adi.jesd import jesd
 except ImportError:
