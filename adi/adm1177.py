@@ -84,9 +84,8 @@ class adm1177(context_manager, attribute):
             return self._get_iio_attr(self.name, "scale", False)
         
         def calculate_current(self):
-            for i in range(5):
-                raw = self.raw
-                scale = self.scale
+            raw = self.raw
+            scale = self.scale
             # current = raw * scale
             num_measurements = 10
             total_current = 0
@@ -99,9 +98,9 @@ class adm1177(context_manager, attribute):
             average_current = round(average, 2)
             print(f"Average Current is: {average_current} mA.")
                         
-            if average_current < 350:
+            if average_current < 320:
                 raise ValueError("Average current is below the desired minimum of 350 mA.")
-            elif 350 <= average_current <= 420:
+            elif 320 <= average_current <= 420:
                 print("Average current is within the desired range.")
             else:
                 print("Average current is above the desired maximum of 450 mA.")

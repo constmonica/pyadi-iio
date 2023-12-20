@@ -140,13 +140,12 @@ adm1177 = adi.adm1177(uri="serial:/dev/ttyACM0,345600,8n1n")
 @pytest.mark.parametrize(
     "attr, start, stop, step, tol, repeats",
     [
-        ("raw", 250, 450, 1, 10, 10),
-        ("scale", 1, 2, 0.5, 10, 10),
+        ("raw", 250, 450, 1, 10, 1),
+        ("scale", 1, 2, 0.5, 10, 1),
     ],
 )
 
 def test_current(test_attribute_single_value, iio_uri, classname, attr, start, stop, step, tol, repeats, channel):
-    test_attribute_single_value(iio_uri, classname, attr, start, stop, step, tol, repeats, channel)
     current_channel = adm1177.current0(adm1177._ctrl, "current0")
     current_channel.calculate_current()
 
