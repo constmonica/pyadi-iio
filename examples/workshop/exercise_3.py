@@ -70,6 +70,7 @@ while True:
         red_channel_val = (resistance / 11000) * AD74413R_DAC_MAX_CODE
         
         # Your code goes here
+        # Assign the value of potentiometer value to the adc channel
 
 
 
