@@ -1,13 +1,8 @@
 import adi
-import tkinter as tk
-from tkinter import messagebox
-from tkinter import *
-import time
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.pyplot as plt
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import numpy as np
-import customtkinter as ctk
+import time
+import atexit
 
 
 AD74413R_DAC_MAX_CODE = 8192
@@ -24,7 +19,7 @@ dev_uri = "ip:192.168.97.40"
 
 """
 
-channel_config = ["voltage_out", "voltage_out", "voltage_in", "voltage_out"]
+channel_config = ["voltage_out", "voltage_out", "voltage_out", "voltage_out"]
 
 # Possible values: 0, 1
 channel_enable = [1, 1, 1, 1]
@@ -64,115 +59,73 @@ print("AD74413R input (ADC) channels:", ad74413r._rx_channel_names)
 # Channels which may be used to set DAC values
 print("AD74413R output (DAC) channels:", ad74413r._tx_channel_names)
 
-print("ADT75 temperature reading:", adt75() * 62.5)
+# EXERCISE 1: Machine status light
 
-data = []
-
-num_readings = 20
-for _ in range(num_readings):
-    try:
-        current = ad74413r.channel["current3"].raw * ad74413r.channel["current3"].scale
-        data.append(current)
-        time.sleep(0.1)
-    except Exception as e:
-        print(f"Error reading value {e}")
-
-voltage_dac_scale = ad74413r.channel["voltage0"].scale
-voltage_dac_offset = ad74413r.channel["voltage0"].offset
-
-def check_led_status():
-    # Check if the LED is on (raw value of 8000)
-    return ad74413r.channel["voltage3"].raw == 8000
-
-# Function to turn on the fan
-def turn_on_fan():
-    ad74413r.channel["voltage0"].raw = 8000 
-    ad74413r.channel["voltage1"].raw = 8000
-    fan_button_on.configure(state="disabled")  
-
-def turn_off_fan():
-    # Your code to turn off the fan goes here
-    pass
-    
-    
-# Function to turn on/off the LED
-def toggle_led():
-    if not check_led_status():
-        ad74413r.channel["voltage3"].raw = 8000
-        messagebox.showinfo("Status:", "LED is turned ON. ")
-        turn_on_fan()
-    else:
-        ad74413r.channel["voltage3"].raw = 0
-        messagebox.showinfo("Status", "LED is turned OFF.")
-        turn_off_fan()
+# If you walk through a factory you'll see a light on top of most machines.
+# The operator looks at it to know what's going on without walking up to
+# the machine. Green means it's running fine, yellow is a warning, red means
+# something went wrong and the machine stopped, and blue usually means the
+# machine is waiting for someone to do something.
+# The RGB LED on the board will be our machine's status light.
 
 
-# Set appearance mode for the UI
-ctk.set_appearance_mode("dark") 
-ctk.set_default_color_theme("green")  
+# No need to change anything here
 
-# Create the main application window
-app = ctk.CTk()
-app.geometry("1000x600")
-app.title("Industrial Control Application")
+# The DAC turns a number from 0 to 8191 into a voltage from 0 to 11 V.
+# We write this number to a color to turn it on
+LED_ON_CODE = 8000
 
-# Left Sidebar Frame
-sidebar_frame = ctk.CTkFrame(app, width=200, corner_radius=10)
-sidebar_frame.grid(row=0, column=0, rowspan=4, sticky="nswe")
-sidebar_frame.grid_rowconfigure(4, weight=1)
+ON = 1
+OFF = 0
 
-# Sidebar Buttons
-fan_button_on = ctk.CTkButton(sidebar_frame, text="Turn Fan ON", command=turn_on_fan)
-fan_button_on.grid(row=0, column=0, padx=20, pady=10)
+def set_light(red, green, blue):
+    # voltage0 = red, voltage1 = green, voltage2 = blue
+    ad74413r.channel["voltage0"].raw = int(red * LED_ON_CODE)
+    ad74413r.channel["voltage1"].raw = int(green * LED_ON_CODE)
+    ad74413r.channel["voltage2"].raw = int(blue * LED_ON_CODE)
 
-fan_button_off = ctk.CTkButton(sidebar_frame, text="Turn Fan OFF", command=turn_off_fan)
-fan_button_off.grid(row=1, column=0, padx=20, pady=10)
+# This turns the light off when the script stops (also when you press Ctrl+C).
+# A real machine has to do this too, we call it going to a safe state
+atexit.register(set_light, OFF, OFF, OFF)
 
 
-# Main Content Frame
-main_frame = ctk.CTkFrame(app, corner_radius=10)
-main_frame.grid(row=0, column=1, padx=20, pady=20, sticky="nsew")
-main_frame.grid_rowconfigure(0, weight=1)
-main_frame.grid_columnconfigure(0, weight=1)
+# Your code goes below
+# set_light(red, green, blue) - turn each color ON or OFF
+# time.sleep(2) - wait 2 seconds
 
-    
-# Matplotlib Plot Integration
-def plot_values(data):
-    fig, ax = plt.subplots(figsize=(8, 4))
-    plt.plot(data, marker='o', linestyle="-")
-    plt.title("AD74413R current0 reading")
-    plt.xlabel("Reading number")
-    plt.ylabel("Current [mA]")
-    plt.grid(True)
-    # plt.show()
-    return fig
+# Step 1: red light, the machine has a fault
+# (we did this one for you so you can see how it works)
+print("Machine state: FAULT")
+set_light(ON, OFF, OFF)
+time.sleep(2)
+
+# Step 2: green light, the machine is running
+# tip: copy the 3 lines from step 1 and change what you need
 
 
-fig = plot_values(data)
-
-# Embed the plot in the Tkinter frame
-canvas = FigureCanvasTkAgg(fig, master=main_frame)  # Create the canvas
-canvas.get_tk_widget().grid(row=0, column=0, padx=20, pady=20, sticky="nsew")  # Place the canvas in the frame
-canvas.draw()
+# Step 3: blue light, the machine is waiting for the operator
 
 
-# Segmented Button in Main Frame
+# Step 4: yellow light, warning
+# careful, the LED has no yellow, you'll have to figure it out
 
-# Right Widgets Frame
-widgets_frame = ctk.CTkFrame(app, corner_radius=10)
-widgets_frame.grid(row=0, column=2, padx=20, pady=20, sticky="nsew")
-widgets_frame.grid_rowconfigure(0, weight=1)
-widgets_frame.grid_columnconfigure(0, weight=1)
 
-# Checkboxes and Switches
-scrollable_frame = ctk.CTkScrollableFrame(widgets_frame, width=200)
-scrollable_frame.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
+# Step 5: start-up sequence
+# now put a few of them in a row, like a machine would do when it starts:
+# blue for 3 seconds, then green for 3, yellow for 2 and red for 2
 
-switch_1 = ctk.CTkSwitch(scrollable_frame, text="Turn LED and Fan ON/OFF", command=toggle_led)
-switch_1.grid(row=0, column=0, pady=5)
 
-checkbox_1 = ctk.CTkCheckBox(scrollable_frame, text="Read Current0 data", command=plot_values(data))
-checkbox_1.grid(row=3, column=0, pady=5)
+# Bonus: flashing alarm
+# When something is really wrong the red light usually flashes, so people
+# notice it faster.
+#
+# You can repeat code with a for loop. Everything indented under the for
+# line gets repeated. This one prints hello 3 times:
+#
+#   for i in range(3):
+#       print("hello")
+#
+# Try to write your own loop that flashes the red light 5 times
+# (half a second on, half a second off)
 
-# Run the application
-app.mainloop()
+print("Done, the light turns off by itself now")
